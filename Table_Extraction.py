@@ -27,45 +27,6 @@ def process_image(image_path):
     res = ocr.ocr(image_path, cls=True)
     print(res)
 
-    def is_inside_text(cell, text):
-        """检查文字是否完全在单元格内"""
-        cx1, cy1, cx2, cy2 = cell
-        tx1, ty1, tx2, ty2 = text['coords']
-        return cx1 <= tx1 and cy1 <= ty1 and cx2 >= tx2 and cy2 >= ty2
-
-
-    def calculate_iou(cell, text):
-        """
-        计算两个矩形框的交并比（IoU）。
-
-        :param cell: 单元格的坐标 (x1, y1, x2, y2)
-        :param text: 文本框的坐标 (x1, y1, x2, y2)
-        :return: 交并比（IoU）
-        """
-        # 计算交集的左上角和右下角坐标
-        intersection_x1 = max(cell[0], text['coords'][0])
-        intersection_y1 = max(cell[1], text['coords'][1])
-        intersection_x2 = min(cell[2], text['coords'][2])
-        intersection_y2 = min(cell[3], text['coords'][3])
-
-        # 如果没有交集，返回 0
-        if intersection_x1 >= intersection_x2 or intersection_y1 >= intersection_y2:
-            return 0.0
-
-        # 计算交集的面积
-        intersection_area = (intersection_x2 - intersection_x1) * (intersection_y2 - intersection_y1)
-
-        # 计算并集的面积
-        area_box1 = (cell[2] - cell[0]) * (cell[3] - cell[1])
-        area_box2 = (text['coords'][2] - text['coords'][0]) * (text['coords'][3] - text['coords'][1])
-        union_area = area_box1 + area_box2 - intersection_area
-
-        # 计算 IoU
-        iou = intersection_area / union_area
-
-        return iou
-
-
     def calculate_iot(cell, text):
         """
         计算两个矩形框的交集面积和文本框面积的比值（IoT）。
@@ -165,22 +126,24 @@ def process_image(image_path):
         img = Image.new('RGB', img.size, (255, 255, 255))
         draw = ImageDraw.Draw(img)
         font = ImageFont.truetype("./chinese_cht.ttf", size=15)  # 选择合适的字体和大小
+
         for box, text in zip(boxes, texts):
+            # 修正坐标顺序：确保 x0 <= x1 且 y0 <= y1
+            x0, y0, x1, y1 = box
+            x0, x1 = sorted([x0, x1])  # 确保 x0 <= x1
+            y0, y1 = sorted([y0, y1])  # 确保 y0 <= y1
+            normalized_box = (x0, y0, x1, y1)
 
-            draw.rectangle(box, outline='red', width=2)
+            draw.rectangle(normalized_box, outline='red', width=2)
 
-            text_len = draw.textbbox(xy=box[:2], text=text, font=font)
+            text_len = draw.textbbox(xy=(x0, y0), text=text, font=font)
 
-            if (text_len[2] - text_len[0]) > (box[2] - box[0]):
-                # 如果文本长度大于文本框宽度,则将文本换行
+            if (text_len[2] - text_len[0]) > (x1 - x0):
                 text = '\n'.join(textwrap.wrap(text, width=int(
-                    np.ceil(len(text) / np.ceil((text_len[2] - text_len[0]) / (box[2] - box[0]))))))
-            else:
-                # 否则直接绘制文本
-                text = text
-            x, y = box[:2]
+                    np.ceil(len(text) / np.ceil((text_len[2] - text_len[0]) / (x1 - x0))))))
 
-            draw.text((x, y), text, font=font, fill='black')
+            draw.text((x0, y0), text, font=font, fill='black')
+
         img.save('D:/Personal_Project/PDF_Extraction/output.png')
 
 
