@@ -56,4 +56,4 @@ python Table_Extraction.py
 
 Once the models are set up,Once the model is built, you can start extracting tables and text from images.
 
-This project makes use of [wyf3](https://github.com/wyf3/llm_related/tree/main)
+This project makes use of  [wyf3](https://github.com/wyf3/llm_related/tree/main)
