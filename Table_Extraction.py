@@ -6,7 +6,7 @@ import textwrap
 import numpy as np
 
 # 指定完整路径
-model_path = "D:/Personal_Project/PDF_Extraction/cv_dla34_table-structure-recognition_cycle-centernet"
+model_path = "your_absolute_path_to_cv_dla34_table-structure-recognition_cycle-centernet"
 
 def process_image(image_path):
     # 1. 表格结构识别
@@ -19,9 +19,9 @@ def process_image(image_path):
     ocr = PaddleOCR(
         use_gpu=True,
         lang='ch',
-        det_model_dir='D:/Personal_Project/PDF_Extraction/PaddleOCR/models/ch_PP-OCRv4_det_infer/',
-        rec_model_dir='D:/Personal_Project/PDF_Extraction/PaddleOCR/models/ch_PP-OCRv4_rec_infer/',
-        cls_model_dir='D:/Personal_Project/PDF_Extraction/PaddleOCR/models/ch_ppocr_mobile_v2.0_cls_infer/'
+        det_model_dir='your_absolute_path_to_ch_PP-OCRv4_det_infer',
+        rec_model_dir='your_absolute_path_to_ch_PP-OCRv4_rec_infer',
+        cls_model_dir='your_absolute_path_to_ch_ppocr_mobile_v2.0_cls_infer'
     )
 
     res = ocr.ocr(image_path, cls=True)
@@ -144,7 +144,7 @@ def process_image(image_path):
 
             draw.text((x0, y0), text, font=font, fill='black')
 
-        img.save('D:/Personal_Project/PDF_Extraction/output.png')
+        img.save('D:/Personal_Project/PDF_Extraction/output.png') #修改为你自己的图片输出路径
 
 
     boxes = list(adjusted_merged_text.keys())
