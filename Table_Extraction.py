@@ -143,8 +143,8 @@ def process_image(image_path):
                     np.ceil(len(text) / np.ceil((text_len[2] - text_len[0]) / (x1 - x0))))))
 
             draw.text((x0, y0), text, font=font, fill='black')
-
-        img.save('D:/Personal_Project/PDF_Extraction/output.png') #修改为你自己的图片输出路径
+        #修改为你自己的图片输出路径
+        img.save('your_image_storage_path/output.png') 
 
 
     boxes = list(adjusted_merged_text.keys())
