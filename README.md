@@ -1,6 +1,6 @@
 # PDF Extraction
 
-This project focuses on extracting parameters from PDF files, specifically by recognizing miages and tables. The main tasks include:
+This project focuses on extracting parameters from PDF files, specifically by recognizing tables. The main tasks include:
 
 ## Table Extraction
 
